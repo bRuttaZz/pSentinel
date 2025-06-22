@@ -2,7 +2,7 @@ VERSION = $(shell cat ./VERSION)
 
 CC = gcc
 
-CFLAGS = -Wall -Iinclude
+CFLAGS = -xc -Wall -Iinclude -DVERSION=\"$(VERSION)\"
 SRC = $(wildcard src/*.c)
 BUILD_DIR = build
 
