@@ -1,6 +1,8 @@
 #ifndef CONFIGS_H
 #define CONFIGS_H
 
+#include <stdio.h>
+
 #ifndef VERSION
 #define VERSION "0.0.0"
 #endif
@@ -24,6 +26,7 @@ typedef struct {
     char *dump_file; // output file
     char *exec;      // executable
     char **args;     // NULL terminated array of arguments
+    FILE *log_file;
 } Conf;
 
 extern Conf g_conf;
@@ -40,5 +43,10 @@ void parse_args(int argc, char *argv[]);
  *      - >=0 : Exit status codes
  */
 int validate_args();
+
+/** Collect config garbage
+ * if the `sig` set to -99 : will not exit with status
+ */
+void collect_garbage(int sig);
 
 #endif // CONFIGS_H

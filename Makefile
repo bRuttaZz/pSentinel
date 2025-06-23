@@ -19,12 +19,13 @@ _pre_build:
 	@mkdir -p $(BUILD_DIR)
 
 test: _pre_build ## Run test
-	- $(CC) $(CFLAGS) $(DEBUG_CFLAGS) -o test-$(TARGET) test.c $(SRC)
+	# TODO: write unit testcases
+	- $(CC) $(CFLAGS) $(DEBUG_CFLAGS) -o test-$(TARGET) main.c $(SRC)
 	- @echo -e "\n\nRunning test.."
-	- ./test-$(TARGET)
+	- ./test-$(TARGET) ls
 
 build-prod: _pre_build ## Production build
-	$(CC) $(CFLAGS) -o test-$(TARGET) main.c $(SRC)
+	$(CC) $(CFLAGS) -o $(TARGET) main.c $(SRC)
 
 build-dev:	_pre_build ## Debug build
 	$(CC) $(CFLAGS) $(DEBUG_CFLAGS) -o dev-$(TARGET) main.c $(SRC)
