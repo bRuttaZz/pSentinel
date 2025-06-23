@@ -3,7 +3,7 @@ repos:
     rev: v17.0.6
     hooks:
       - id: clang-format
-        args: [--style=.clang-format]
+        args: [--style=file]
         files: \.(c|h)$
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
