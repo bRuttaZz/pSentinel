@@ -47,6 +47,20 @@ int _setup_output_file() {
         return 1;
     }
     signal(SIGINT, collect_garbage);
+
+    // intial report items
+    const char report_html[] = REPORT_HTML;
+    fprintf(g_conf.log_file, "%s", report_html);
+    fprintf(g_conf.log_file, "<cmd data-exe=\"%s\" data-args=\"", g_conf.exec);
+    int i = 1;
+    while (i) {
+        if (g_conf.args[i] == NULL)
+            break;
+        fprintf(g_conf.log_file, "%s ", g_conf.args[i]);
+        i++;
+    }
+    fprintf(g_conf.log_file, "\"></cmd>");
+
     return 0;
 }
 

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>pSentinel</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #f5f5f5;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 40px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #eee;
+    }
+    .section-title {
+      margin-top: 50px;
+      font-size: 1.5em;
+      color: #444;
+    }
+    .prg-called {
+        font-family: monospace;
+        color: darkred;
+        background-color: #eee;
+        margin-left: 10px;
+    }
+    .success {
+        color: green;
+    }
+    .failed {
+        color: red;
+    }
+    .mono {
+        font-family: monospace;
+    }
+    .code {
+        color: indianred;
+        font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>pSentinel: Program Activity Report</h1>
+
+  <div class="section">
+    <h2 class="section-title"> CMD: <span class="prg-called">xxx xxx xxx</span></h2>
+  </div>
+  <div class="section">
+    <h2 class="section-title">Executables Called</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Executable</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody class="executables">
+        <!-- <tr>
+          <td>example.exe</td>
+          <td>Success</td>
+          </tr> -->
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">Network Connections</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Domain/IP</th>
+          <th>Port</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody class="network-connections">
+        <!-- <tr>
+          <td>api.example.com</td>
+          <td>443</td>
+          <td>Success</td>
+        </tr> -->
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">Network Activity</h2>
+    <table>
+      <thead>
+        <tr>
+            <th>Data Sent (KB)</th>
+            <th>Data Received (KB)</th>
+        </tr>
+      </thead>
+      <tbody class="network-activity">
+        <!-- <tr>
+          <td>12</td>
+          <td>120</td>
+        </tr> -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    window.onload = () => {
+      const cmd = document.querySelector(".prg-called");
+      const execs = document.querySelector(".executables");
+      const netCons = document.querySelector(".network-connections");
+      const netAct = document.querySelector(".network-activity");
+
+      const dataCmd = document.querySelector("cmd")
+      const dataExecs = document.querySelectorAll("exec")
+      const dataNetCons = document.querySelectorAll("netcon")
+      const dataNetAct = document.querySelector("netact")
+
+      if (dataCmd) {
+        cmd.innerHTML = dataCmd.dataset.exe + ' ' + dataCmd.dataset.args
+      }
+      dataExecs.forEach(el=>{
+        execs.innerHTML += `<tr>
+          <td><span class="code">${el.dataset.cmd}</span></td>
+          <td><span class="${el.dataset.status}">${el.dataset.status}</span> (${el.dataset.code})</td>
+        </tr>`
+      })
+      dataNetCons.forEach(el=>{
+        netCons.innerHTML += `<tr>
+          <td><span class="boldmono">${el.dataset.domain? el.dataset.domain + ' (' + el.dataset.ip + ')': el.dataset.ip}</span></td>
+          <td>${el.dataset.port}</td>
+          <td><span class="${el.dataset.status}">${el.dataset.status}</span> (${el.dataset.code})</td>
+        </tr>`
+      })
+      if (dataNetAct) {
+        netAct.innerHTML = `<tr>
+          <td>${dataNetAct.dataset.sent}</td>
+          <td>${dataNetAct.dataset.received}</td>
+        </tr>`
+      }
+    }
+  </script>
+
+</body>
+</html>
+
+<!-- <cmd data-exe="prg" data-args="xxx xxx xxx"></cmd>
+<exec data-cmd="/usr/bin/curl0", data-status="success" data-code="0"></exec>
+<exec data-cmd="/usr/bin/curl1", data-status="failed" data-code="1"></exec>
+<netcon data-ip="0.0.0.0" data-domain="example.com" data-port="443" data-status="success" data-code="0"></netcon>
+<netcon data-ip="0.0.0.1" data-domain="" data-port="443" data-status="progress" data-code="-115"></netcon>
+<netact data-sent="102" data-received="204"></netact> -->

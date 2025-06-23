@@ -10,11 +10,12 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-int (*syscall_tracers[])(long long unsigned int, struct user_regs_struct *) = {
+int (*syscall_tracers[])(long long unsigned int, pid_t, struct user_regs_struct *) = {
     trace_exec_calls,
     trace_network_calls,
+    empty_trace_syscall_exit,
 };
-int syscall_tracers_count = 2;
+int syscall_tracers_count = 3;
 
 int trace() {
     pid_t child = fork();
@@ -29,6 +30,8 @@ int trace() {
     } else {
         // parent
         int status;
+        int return_ = 0;
+
         waitpid(child, &status, 0);
 
         ptrace(PTRACE_SETOPTIONS, child, 0, PTRACE_O_TRACESYSGOOD);
@@ -46,16 +49,20 @@ int trace() {
             if (WIFSTOPPED(status) && WSTOPSIG(status) == (SIGTRAP | 0x80)) {
                 // syscall entry/exit (we look for entry here :)
                 for (int i = 0; i < 2; i++) {
-                    if (!syscall_tracers[i](syscall, &regs))
+                    status = syscall_tracers[i](syscall, child, &regs);
+                    if (status == -1) // case found
                         break;
+                    else if (status > -1) { // prog exit status
+                        return_ = 1;
+                        break;
+                    }
                 }
             }
-
-            ptrace(PTRACE_SYSCALL, child, 0, 0); // for the syscall end
-            waitpid(child, &status, 0);
-            if (WIFEXITED(status))
+            if (return_)
                 break;
         }
+        fprintf(g_conf.log_file, "<netact data-sent=\"%.3f\" data-received=\"%.3f\"></netact>\n",
+                (float)g_conf.data_sent / 1024.0, (float)g_conf.data_received / 1024.0);
         return status;
     }
 }
